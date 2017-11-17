@@ -76,13 +76,60 @@ public class JobData {
 
             String aValue = row.get(column);
 
-            if (aValue.contains(value)) {
+            if (aValue.toLowerCase().contains(value.toLowerCase())) {
                 jobs.add(row);
             }
         }
 
         return jobs;
     }
+
+    public static void findByValue(String value) {
+
+        // load data, if not already loaded
+        loadData();
+
+        Integer numJobs = allJobs.size();
+
+        // if there are no jobs, inform user
+        if (numJobs <= 0) {
+            System.out.println("No job postings match seach");
+        } else {
+
+            int numPosts = 0;
+            // for every post in job_data.csv, check listing
+            for (HashMap<String, String> someJob : allJobs) {
+
+                //for each listing, check each attribute
+                for (String jobAttribute : someJob.keySet()) {
+
+                    // for each attribute, check for the search term
+                    if (someJob.get(jobAttribute).toLowerCase().contains(value.toLowerCase())) {
+                        numPosts += 1;
+                        System.out.println("*****\n" + numPosts);
+
+                        HashMap<String, String> jobPost = new HashMap<>(someJob);
+
+                        // for every attribute in listing, print the attribute type and name
+                        for (String attribute : jobPost.keySet()) {
+                            String postKey = attribute;
+                            String keyValue = jobPost.get(attribute);
+                            System.out.println(postKey + " : " + keyValue);
+                        }
+
+                        System.out.println("*****");
+
+                        break;
+                    }
+                }
+
+            }
+
+            System.out.println(numPosts);
+        }
+    }
+
+
 
     /**
      * Read in data from a CSV file and store it in a list
